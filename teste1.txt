@@ -1,1 +1,1 @@
-Hello world! cucu staged, forcei um conflito
+Hello world! cucu staged, alteração da branch
