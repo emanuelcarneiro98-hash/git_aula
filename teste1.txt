@@ -1,3 +1,5 @@
 Hello world! cucu staged, forcei um conflito
 
+Adicionei codigo á minha funcionalidade
+
 merge conflit
