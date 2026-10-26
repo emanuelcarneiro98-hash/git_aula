@@ -1,1 +1,2 @@
 Hello world! cucu staged, forcei um conflito
+merge commit
