@@ -1,2 +1,4 @@
 Hello world! cucu staged, forcei um conflito
+
+merge conflit
 merge commit
