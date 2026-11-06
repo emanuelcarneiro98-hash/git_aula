@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+
+<title>Emanuel — A minha apresentação</title>
+
+<style>
+:root {
+    --bg: #0b1020;
+    --panel: rgba(18, 27, 49, .85);
+    --text: #f4f7ff;
+    --muted: #aab6d0;
+    --accent: #69e2d0;
+    --accent2: #9b8cff;
+    --line: rgba(255,255,255,.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background:
+        radial-gradient(circle at 15% 15%,
+        rgba(105,226,208,.12), transparent 30%),
+        radial-gradient(circle at 85% 80%,
+        rgba(155,140,255,.15), transparent 34%),
+        var(--bg);
+
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* Estrutura da apresentação */
+
+.deck {
+    height: 100%;
+    position: relative;
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    padding: clamp(24px, 6vw, 76px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    opacity: 0;
+    transform: translateX(28px) scale(.99);
+
+    transition: opacity .42s ease,
+                transform .42s ease;
+
+    pointer-events: none;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+
+/* Tipografia */
+
+.eyebrow {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    font-size: .78rem;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+h1 {
+    font-size: clamp(3rem, 9vw, 7.6rem);
+    line-height: .98;
+    letter-spacing: -.065em;
+    margin-bottom: 24px;
+}
+
+h2 {
+    font-size: clamp(2.2rem, 5vw, 4.6rem);
+    line-height: 1.04;
+    letter-spacing: -.045em;
+    margin-bottom: 24px;
+}
+
+.accent {
+    color: var(--accent);
+}
+
+.lead {
+    max-width: 760px;
+    font-size: clamp(1.05rem, 2vw, 1.45rem);
+    line-height: 1.65;
+    color: var(--muted);
+}
+
+.small {
+    color: var(--muted);
+    font-size: .92rem;
+}
+
+/* Elemento visual do primeiro slide */
+
+.hero-mark {
+    position: absolute;
+    right: 8%;
+    top: 18%;
+
+    width: min(30vw, 300px);
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+    border: 1px solid rgba(105,226,208,.25);
+
+    background: radial-gradient(
+        circle at 35% 30%,
+        rgba(105,226,208,.18),
+        rgba(155,140,255,.08) 45%,
+        transparent 70%
+    );
+
+    box-shadow: 0 0 90px rgba(105,226,208,.08);
+}
+
+.hero-mark::before,
+.hero-mark::after {
+    content: "";
+    position: absolute;
+    inset: 14%;
+
+    border: 1px solid rgba(155,140,255,.4);
+    border-radius: 35%;
+
+    transform: rotate(35deg);
+}
+
+.hero-mark::after {
+    inset: 28%;
+    border-color: rgba(105,226,208,.5);
+    transform: rotate(-25deg);
+}
+
+/* Cartões */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 980px;
+}
+
+.card {
+    padding: 22px;
+
+    border: 1px solid var(--line);
+    border-radius: 20px;
+
+    background: var(--panel);
+    backdrop-filter: blur(10px);
+}
+
+.card h3 {
+    margin: 0 0 8px;
+    font-size: 1.12rem;
+}
+
+.card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.icon {
+    font-size: 1.55rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Percurso */
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    max-width: 1050px;
+}
+
+.step {
+    border-top: 2px solid var(--accent);
+    padding: 18px 14px 0 0;
+}
+
+.step b {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.step p {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* Frase final */
+
+.quote {
+    font-size: clamp(1.6rem, 4vw, 3.5rem);
+    max-width: 900px;
+    line-height: 1.25;
+    letter-spacing: -.03em;
+}
+
+/* Controlos */
+
+.controls {
+    position: fixed;
+    z-index: 5;
+
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 9px 12px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+
+    background: rgba(11,16,32,.82);
+    backdrop-filter: blur(12px);
+}
+
+button {
+    border: 0;
+    color: var(--text);
+    background: transparent;
+    cursor: pointer;
+
+    font: inherit;
+    padding: 8px 12px;
+    border-radius: 999px;
+}
+
+button:hover {
+    background: rgba(255,255,255,.1);
+}
+
+button:disabled {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.counter {
+    color: var(--muted);
+    min-width: 54px;
+    text-align: center;
+    font-size: .86rem;
+}
+
+/* Barra de progresso */
+
+.progress {
+    position: fixed;
+    z-index: 6;
+
+    height: 3px;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    background: rgba(255,255,255,.08);
+}
+
+.progress span {
+    display: block;
+    height: 100%;
+    width: 16.66%;
+
+    background: linear-gradient(
+        90deg,
+        var(--accent),
+        var(--accent2)
+    );
+
+    transition: width .3s ease;
+}
+
+.hint {
+    position: fixed;
+    right: 26px;
+    bottom: 31px;
+
+    color: var(--muted);
+    font-size: .78rem;
+}
+
+/* Adaptação para telemóveis */
+
+@media (max-width: 700px) {
+    .slide {
+        padding: 26px 22px 90px;
+    }
+
+    .hero-mark {
+        width: 35vw;
+        right: 7%;
+        top: 9%;
+        opacity: .65;
+    }
+
+    .grid,
+    .steps {
+        grid-template-columns: 1fr;
+        gap: 11px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .hint {
+        display: none;
+    }
+
+    .controls {
+        bottom: 15px;
+    }
+
+    .slide.active {
+        overflow-y: auto;
+        justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="deck" aria-label="Apresentação pessoal">
+
+    <!-- SLIDE 1: APRESENTAÇÃO -->
+
+    <section class="slide active" aria-label="Slide 1">
+
+        <div class="hero-mark" aria-hidden="true"></div>
+
+        <div class="eyebrow">
+            Apresentação pessoal · 2026
+        </div>
+
+        <h1>
+            Olá, sou o<br>
+            <span class="accent">Emanuel.</span>
+        </h1>
+
+        <p class="lead">
+            Curioso por natureza. Prático na forma de pensar.
+            Sempre a aprender e a construir o próximo passo.
+        </p>
+
+        <p class="small">
+            Uma pequena apresentação sobre o que me move,
+            o que estou a aprender e onde quero chegar.
+        </p>
+
+    </section>
+
+    <!-- SLIDE 2: QUEM SOU -->
+
+    <section class="slide" aria-label="Slide 2">
+
+        <div class="eyebrow">
+            01 · Quem sou
+        </div>
+
+        <h2>
+            Gosto de pôr<br>
+            as ideias <span class="accent">em prática.</span>
+        </h2>
+
+        <p class="lead">
+            Sou alguém que aprende fazendo. No trabalho,
+            nos projetos de casa ou quando começo a explorar
+            uma nova tecnologia, gosto de perceber como as
+            coisas funcionam — e de encontrar uma maneira
+            de as melhorar.
+        </p>
+
+        <div class="grid" style="margin-top:28px">
+
+            <article class="card">
+                <span class="icon">🧩</span>
+
+                <h3>Resolver problemas</h3>
+
+                <p>
+                    Dividir um desafio em partes, experimentar
+                    e encontrar uma solução que funcione.
+                </p>
+            </article>
+
+            <article class="card">
+                <span class="icon">🌱</span>
+
+                <h3>Evoluir continuamente</h3>
+
+                <p>
+                    Aprender um pouco de cada vez e transformar
+                    conhecimento em prática.
+                </p>
+            </article>
+
+        </div>
+
+    </section>
+
+    <!-- SLIDE 3: PERCURSO -->
+
+    <section class="slide" aria-label="Slide 3">
+
+        <div class="eyebrow">
+            02 · O meu percurso
+        </div>
+
+        <h2>
+            Experiência real.<br>
+            <span class="accent">Novos horizontes.</span>
+        </h2>
+
+        <p class="lead">
+            O meu percurso profissional deu-me contacto com
+            o ritmo do retalho, o trabalho em equipa e a
+            importância de lidar com pessoas. Agora, estou
+            também a investir em competências digitais e
+            a explorar novas possibilidades profissionais.
+        </p>
+
+        <div class="steps" style="margin-top:32px">
+
+            <div class="step">
+                <b>Trabalho</b>
+
+                <p>
+                    Responsabilidade, organização e experiência
+                    no dia a dia.
+                </p>
+            </div>
+
+            <div class="step">
+                <b>Aprendizagem</b>
+
+                <p>
+                    Estudo autónomo, prática e curiosidade
+                    por tecnologia.
+                </p>
+            </div>
+
+            <div class="step">
+                <b>Próximo passo</b>
+
+                <p>
+                    Construir competências que abram
+                    novas oportunidades.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SLIDE 4: TECNOLOGIA -->
+
+    <section class="slide" aria-label="Slide 4">
+
+        <div class="eyebrow">
+            03 · O que estou a aprender
+        </div>
+
+        <h2>
+            A tecnologia é<br>
+            um <span class="accent">novo desafio.</span>
+        </h2>
+
+        <div class="grid">
+
+            <article class="card">
+                <span class="icon">🌐</span>
+
+                <h3>HTML & CSS</h3>
+
+                <p>
+                    Estruturar páginas web e dar-lhes forma,
+                    estilo e adaptação a diferentes ecrãs.
+                </p>
+            </article>
+
+            <article class="card">
+                <span class="icon">🗃️</span>
+
+                <h3>SQL & PostgreSQL</h3>
+
+                <p>
+                    Modelar bases de dados, compreender
+                    relações e aprender a consultar informação.
+                </p>
+            </article>
+
+            <article class="card">
+                <span class="icon">🔄</span>
+
+                <h3>Agile: Scrum & Kanban</h3>
+
+                <p>
+                    Organizar tarefas, visualizar progresso
+                    e melhorar a forma de trabalhar.
+                </p>
+            </article>
+
+            <article class="card">
+                <span class="icon">🧠</span>
+
+                <h3>Aprender a aprender</h3>
+
+                <p>
+                    Praticar, testar, corrigir erros
+                    e ganhar autonomia passo a passo.
+                </p>
+            </article>
+
+        </div>
+
+    </section>
+
+    <!-- SLIDE 5: VIDA PESSOAL -->
+
+    <section class="slide" aria-label="Slide 5">
+
+        <div class="eyebrow">
+            04 · Fora do ecrã
+        </div>
+
+        <h2>
+            Também gosto de<br>
+            <span class="accent">
+                construir no mundo real.
+            </span>
+        </h2>
+
+        <p class="lead">
+            Os projetos pessoais fazem parte de mim.
+            Gosto de melhorar espaços, trabalhar no jardim,
+            pensar em estruturas e encontrar soluções
+            práticas para as coisas do dia a dia.
+
+            E há sempre espaço para animais, família
+            e desporto.
+        </p>
+
+        <div class="grid" style="margin-top:28px">
+
+            <article class="card">
+                <span class="icon">🛠️</span>
+
+                <h3>Projetos DIY</h3>
+
+                <p>
+                    Planeamento, ferramentas e trabalho
+                    feito com as próprias mãos.
+                </p>
+            </article>
+
+            <article class="card">
+                <span class="icon">🏡</span>
+
+                <h3>Casa & jardim</h3>
+
+                <p>
+                    Melhorar o espaço, cuidar das plantas
+                    e criar algo útil.
+                </p>
+            </article>
+
+        </div>
+
+    </section>
+
+    <!-- SLIDE 6: OBJETIVOS -->
+
+    <section class="slide" aria-label="Slide 6">
+
+        <div class="eyebrow">
+            05 · Para onde vou
+        </div>
+
+        <h2>
+            O próximo capítulo<br>
+            <span class="accent">
+                está em construção.
+            </span>
+        </h2>
+
+        <p class="quote">
+            “Não preciso de saber tudo hoje.
+            Preciso é de continuar a aprender e a avançar.”
+        </p>
+
+        <p class="lead" style="margin-top:22px">
+            Quero consolidar os meus conhecimentos,
+            criar projetos que demonstrem o que sei fazer
+            e preparar-me para novas oportunidades
+            na área tecnológica.
+        </p>
+
+        <p class="small" style="margin-top:28px">
+            Obrigado por conheceres um pouco da minha história.
+        </p>
+
+    </section>
+
+</main>
+
+<!-- CONTROLOS DA APRESENTAÇÃO -->
+
+<div class="controls" aria-label="Controlos da apresentação">
+
+    <button
+        id="prev"
+        aria-label="Slide anterior"
+        title="Anterior (←)"
+    >
+        ←
+    </button>
+
+    <span
+        class="counter"
+        id="counter"
+        aria-live="polite"
+    >
+        1 / 6
+    </span>
+
+    <button
+        id="next"
+        aria-label="Slide seguinte"
+        title="Seguinte (→)"
+    >
+        →
+    </button>
+
+</div>
+
+<div class="hint">
+    Usa ← → ou as teclas de espaço
+</div>
+
+<div class="progress" aria-hidden="true">
+    <span id="progress"></span>
+</div>
+
+<!-- JAVASCRIPT -->
+
+<script>
+const slides = [...document.querySelectorAll(".slide")];
+
+const counter = document.getElementById("counter");
+
+const progress = document.getElementById("progress");
+
+let current = 0;
+
+// Mostrar o slide escolhido
+
+function showSlide(index) {
+
+    current = Math.max(
+        0,
+        Math.min(index, slides.length - 1)
+    );
+
+    slides.forEach((slide, i) => {
+
+        slide.classList.toggle(
+            "active",
+            i === current
+        );
+
+        slide.setAttribute(
+            "aria-hidden",
+            i === current ? "false" : "true"
+        );
+
+    });
+
+    // Atualizar o número do slide
+
+    counter.textContent =
+        `${current + 1} / ${slides.length}`;
+
+    // Atualizar a barra de progresso
+
+    progress.style.width =
+        `${((current + 1) / slides.length) * 100}%`;
+
+    // Ativar ou desativar os botões
+
+    document.getElementById("prev").disabled =
+        current === 0;
+
+    document.getElementById("next").disabled =
+        current === slides.length - 1;
+
+}
+
+// Botão anterior
+
+document.getElementById("prev")
+    .addEventListener("click", () => {
+
+        showSlide(current - 1);
+
+    });
+
+// Botão seguinte
+
+document.getElementById("next")
+    .addEventListener("click", () => {
+
+        showSlide(current + 1);
+
+    });
+
+// Navegação através do teclado
+
+document.addEventListener("keydown", (event) => {
+
+    if (
+        event.key === "ArrowRight" ||
+        event.key === " " ||
+        event.key === "PageDown"
+    ) {
+
+        event.preventDefault();
+
+        showSlide(current + 1);
+
+    }
+
+    if (
+        event.key === "ArrowLeft" ||
+        event.key === "PageUp"
+    ) {
+
+        event.preventDefault();
+
+        showSlide(current - 1);
+
+    }
+
+    if (event.key === "Home") {
+
+        showSlide(0);
+
+    }
+
+    if (event.key === "End") {
+
+        showSlide(slides.length - 1);
+
+    }
+
+});
+
+// Iniciar a apresentação
+
+showSlide(0);
+
+</script>
+
+</body>
+</html>
